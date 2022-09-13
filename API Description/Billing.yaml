@@ -1,0 +1,135 @@
+openapi: 3.0.1
+info:
+  title: Billing Service
+  description: Сервис биллинга
+  contact:
+    name: Alexander Mikhalev
+    url: https://t.me/flipmachin1001
+    email: flipmachin1001@gmail.com
+  version: v1
+paths:
+  /api/Billing:
+    post:
+      tags:
+        - Billing
+      summary: Создать аккаунт пользователя
+      parameters:
+        - name: userId
+          in: query
+          description: Идентификатор пользователя
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+  /api/Billing/{userId}:
+    put:
+      tags:
+        - Billing
+      summary: Положить деньги на счет
+      parameters:
+        - name: userId
+          in: path
+          description: Идентификатор пользователя
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: money
+          in: query
+          description: Размер пополнения
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: Success
+    get:
+      tags:
+        - Billing
+      summary: Получить баланс пользователя по его Id
+      parameters:
+        - name: userId
+          in: path
+          description: Идентификатор пользователя
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: number
+                format: double
+            application/json:
+              schema:
+                type: number
+                format: double
+            text/json:
+              schema:
+                type: number
+                format: double
+    delete:
+      tags:
+        - Billing
+      summary: Снять деньги со счета
+      parameters:
+        - name: userId
+          in: path
+          description: Идентификатор пользователя
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: money
+          in: query
+          description: Сумма для списания
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: Success
+  /api/Billing/PayForOrder:
+    post:
+      tags:
+        - Billing
+      summary: Оплатить заказ
+      requestBody:
+        description: Платеж
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    OrderPayment:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя, который произвел платеж
+          format: uuid
+        orderId:
+          type: string
+          description: Номер заказа
+          format: uuid
+        orderCost:
+          type: number
+          description: Стоимость заказа
+          format: double
+      additionalProperties: false
+      description: Платеж за заказ
