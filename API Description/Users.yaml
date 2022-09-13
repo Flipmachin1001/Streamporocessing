@@ -1,0 +1,69 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Users Service",
+    "description": "Сервис пользователей",
+    "contact": {
+      "name": "Alexander Mikhalev",
+      "url": "https://t.me/flipmachin1001",
+      "email": "flipmachin1001@gmail.com"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Создать нового пользователя",
+        "requestBody": {
+          "description": "Пользователь",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserModel": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Идентификатор пользователя",
+            "format": "uuid"
+          },
+          "userName": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Модель пользователя"
+      }
+    }
+  }
+}
