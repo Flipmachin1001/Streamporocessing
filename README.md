@@ -77,3 +77,33 @@
 * При поступлении события "Заказ оплачен" или "Заказ отменен" сохраняет в БД уведомления.
 * Пользователь обращается с запросом на получение списка уведомлений передавая свой GUID.
 * Сервис нотификаций делает запрос в БД на получение уведомлений содержащий GUID пользователя и возвращает резудьтат в виде списка.
+
+### Инструкция по установке
+1. Поставить NGINX ингресс через Helm, если не установлен:
+```
+helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace --set controller.admissionWebhooks.enabled=false
+```
+2. Скопировать текущий репозиторий:
+```
+git clone https://github.com/Flipmachin1001/Streamprocessing.git
+```
+3. Перейти в созданный каталог:
+```
+cd Streamproccesing
+```
+4. Установить сервисы через Helm:
+```
+helm install orders ./helm-chart
+```
+5. Дождаться пока установиться RabbitMQ. Для проверки готовности выполнить команду:
+```
+kubectl get pod/orders-rabbitmq-0
+```
+6. Запустить тесты Postman командой:
+```
+newman run StreamProccesing.postman_collection.json
+```
+7. Удалить сервисы через Helm:
+```
+helm uninstall orders
+```
