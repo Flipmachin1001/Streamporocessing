@@ -89,7 +89,7 @@ git clone https://github.com/Flipmachin1001/Streamprocessing.git
 ```
 3. Перейти в созданный каталог:
 ```
-cd Streamproccesing
+cd Streamprocessing
 ```
 4. Установить сервисы через Helm:
 ```
@@ -101,7 +101,7 @@ kubectl get pod/orders-rabbitmq-0
 ```
 6. Запустить тесты Postman командой:
 ```
-newman run StreamProccesing.postman_collection.json
+newman run StreamProcessing.postman_collection.json
 ```
 7. Удалить сервисы через Helm:
 ```
