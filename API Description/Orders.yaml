@@ -1,0 +1,172 @@
+openapi: 3.0.1
+info:
+  title: Orders Service
+  description: Сервис заказов
+  contact:
+    name: Alexander Mikhalev
+    url: https://t.me/flipmachin1001
+    email: flipmachin1001@gmail.com
+  version: v1
+paths:
+  /api/Orders:
+    post:
+      tags:
+        - Orders
+      summary: Создать новый заказ
+      requestBody:
+        description: Заказ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OrderModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OrderModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+  /api/Orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Получить заказ по его номеру
+      parameters:
+        - name: id
+          in: path
+          description: Номер заказа
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+  /api/Orders/OrderPay:
+    post:
+      tags:
+        - Orders
+      summary: Оплатить заказ
+      requestBody:
+        description: Платеж
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OrderPayment'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+  /api/Orders/OrderCancel:
+    post:
+      tags:
+        - Orders
+      summary: Отменить заказ
+      parameters:
+        - name: orderId
+          in: query
+          description: Номер заказа
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderModel'
+components:
+  schemas:
+    OrderModel:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор заказа
+          format: uuid
+          nullable: true
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+        cost:
+          type: number
+          description: Стоимость заказа
+          format: double
+        status:
+          $ref: '#/components/schemas/Status'
+      additionalProperties: false
+      description: Заказ
+    OrderPayment:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+        orderId:
+          type: string
+          description: Номер заказа
+          format: uuid
+        orderCost:
+          type: number
+          description: Стоимость заказа
+          format: double
+        paymentResult:
+          type: string
+          description: Результат оплаты
+          nullable: true
+      additionalProperties: false
+      description: Платеж за заказ
+    Status:
+      enum:
+        - 0
+        - 1
+        - -1
+      type: integer
+      description: Статус заказа
+      format: int32
