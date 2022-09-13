@@ -1,0 +1,678 @@
+{
+	"info": {
+		"_postman_id": "369ae069-e327-4f94-aed2-b586afea7a26",
+		"name": "StreamProcessing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Денег хватает",
+			"item": [
+				{
+					"name": "Users. Создание нового пользователя",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let guid = pm.variables.replaceIn(\"{{$guid}}\")\r",
+									"pm.collectionVariables.set(\"UserId\",guid)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"userName\": \"{{$randomUserName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/users/api/Users",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"users",
+								"api",
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Проврка, что аккаунт создан",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Положить деньги на счет",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}?money=500",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							],
+							"query": [
+								{
+									"key": "money",
+									"value": "500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orders. Создать заказ на который хватает денег",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody)\r",
+									"pm.collectionVariables.set(\"OrderId\", responseJSON[\"id\"])\r",
+									"pm.collectionVariables.set(\"OrderCost\", responseJSON[\"cost\"])\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"cost\": 400\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/orders/api/Orders",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"Orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Оплатить заказ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"orderCost\": {{OrderCost}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/PayForOrder",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"PayForOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Проверить, что деньги списались",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Деньги списались\", function () {\r",
+									"    pm.expect(jsonData).to.eql(100)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify. Проверить уведомление",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"var orderId = pm.collectionVariables.get(\"OrderId\");\r",
+									"\r",
+									"pm.test(\"Письмо счастья\", () => {\r",
+									"    _.each(jsonData, (item) => {\r",
+									"        if (item.subject == orderId)\r",
+									"        {\r",
+									"          pm.expect(item.message).to.include(\"Заказ успешно оплачен!\")\r",
+									"        }\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/notify/api/notify?userId={{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"notify",
+								"api",
+								"notify"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{UserId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Денег не хватает",
+			"item": [
+				{
+					"name": "Users. Создание нового пользователя",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let guid = pm.variables.replaceIn(\"{{$guid}}\")\r",
+									"pm.collectionVariables.set(\"UserId\",guid)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"userName\": \"{{$randomUserName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/users/api/Users",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"users",
+								"api",
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Проврка, что аккаунт создан",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Положить деньги на счет",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}?money=500",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							],
+							"query": [
+								{
+									"key": "money",
+									"value": "500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orders. Создать заказ на который не хватает денег",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody)\r",
+									"pm.collectionVariables.set(\"OrderId\", responseJSON[\"id\"])\r",
+									"pm.collectionVariables.set(\"OrderCost\", responseJSON[\"cost\"])\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"cost\": 700\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/orders/api/Orders",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"orders",
+								"api",
+								"Orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Оплатить заказ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"orderCost\": {{OrderCost}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/PayForOrder",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"PayForOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Billing. Проверить, что деньги не списались",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Деньги не списались\", function () {\r",
+									"    pm.expect(jsonData).to.eql(500)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/billing/api/Billing/{{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"Billing",
+								"{{UserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify. Проверить уведомление",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"var orderId = pm.collectionVariables.get(\"OrderId\");\r",
+									"\r",
+									"pm.test(\"Письмо горя\", () => {\r",
+									"    _.each(jsonData, (item) => {\r",
+									"        if (item.subject == orderId)\r",
+									"        {\r",
+									"          pm.expect(item.message).to.include(\"Заказ отменен!\")\r",
+									"        }\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/notify/api/notify?userId={{UserId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"notify",
+								"api",
+								"notify"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{UserId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(pm.request);",
+					"console.log(pm.response);"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "arch.homework",
+			"type": "default"
+		},
+		{
+			"key": "UserId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "OrderId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "OrderCost",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
