@@ -1,0 +1,64 @@
+openapi: 3.0.1
+info:
+  title: Notify Service
+  description: Сервис уведомлений
+  contact:
+    name: Alexander Mikhalev
+    url: https://t.me/flipmachin1001
+    email: flipmachin1001@gmail.com
+  version: v1
+paths:
+  /api/Notify:
+    get:
+      tags:
+        - Notify
+      summary: Получить список уведомлений для пользователя
+      parameters:
+        - name: userId
+          in: query
+          description: Идентификатор пользователя
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotifyModel'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotifyModel'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotifyModel'
+components:
+  schemas:
+    NotifyModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор уведомления
+          format: int64
+        userId:
+          type: string
+          description: Идентификатор получателя уведомления
+          format: uuid
+        subject:
+          type: string
+          description: Идентификатор предмета уведомления (например номер заказа)
+          format: uuid
+        message:
+          type: string
+          description: Содержимое сообщения
+          nullable: true
+      additionalProperties: false
+      description: Уведомление
