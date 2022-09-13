@@ -1,0 +1,60 @@
+#Оплата
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing-service  #Это DNS сервиса по которому можно внутри обратиться http://billing-service:port/...
+spec:
+  type: {{ .Values.billing.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.billing.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.billing.service.targetPort }}
+  selector:
+    app: billing
+---
+#Пользователи
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service  #Это DNS сервиса по которому можно внутри обратиться http://users-service:port/...
+spec:
+  type: {{ .Values.users.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.users.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.users.service.targetPort }}
+  selector:
+    app: users
+---
+#Заказы
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-service  #Это DNS сервиса по которому можно внутри обратиться http://orders-service:port/...
+spec:
+  type: {{ .Values.orders.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.orders.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.orders.service.targetPort }}
+  selector:
+    app: orders
+---
+#Нотификация
+apiVersion: v1
+kind: Service
+metadata:
+  name: notify-service  #Это DNS сервиса по которому можно внутри обратиться http://notify-service:port/...
+spec:
+  type: {{ .Values.notify.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.notify.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.notify.service.targetPort }}
+  selector:
+    app: notify
+---

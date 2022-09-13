@@ -1,0 +1,54 @@
+#Биллинг
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+  labels:
+    app: orders
+spec:
+  replicas: {{ .Values.orders.replicaCount }}   
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: orders
+          image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          env:
+          - name: ORDERSDB_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: ORDERSDB_URI
+          - name: RabbitMQ_URI
+            valueFrom:
+              secretKeyRef:
+                name: rabbit-secret
+                key: RabbitMQ_URI
+          volumeMounts:
+          - name: configmap-volume
+            mountPath: "/app/appsettings.json"
+            subPath: appsettings.json
+            readOnly: true
+      volumes:
+      - name: configmap-volume
+        configMap:
+          name: api-configmap
