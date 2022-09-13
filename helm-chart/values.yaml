@@ -1,0 +1,66 @@
+billing:
+  enabled: true
+  image:
+    repository: flipmachin1001/billing
+    tag: v5
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+users:
+  enabled: true
+  image:
+    repository: flipmachin1001/users
+    tag: v4
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+orders:
+  enabled: true
+  image:
+    repository: flipmachin1001/orders
+    tag: v2
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+notify:
+  enabled: true
+  image:
+    repository: flipmachin1001/notifyservice
+    tag: v1
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  billingDbName: billingdb
+  usersDbName: usersdb
+  ordersDbName: ordersdb
+  notiftDbName: notifydb
+  service:
+    port: "5432"
+
+rabbitmq:
+  enabled: true
+  rabbitmq:
+    username: user
+    password: Vjqgfhjkm1
+    
+  
+ingress:
+    enabled: true
+    host: arch.homework
