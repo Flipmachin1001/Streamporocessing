@@ -85,7 +85,7 @@ helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.git
 ```
 2. Скопировать текущий репозиторий:
 ```
-git clone https://github.com/Flipmachin1001/Streamporocessing.git
+git clone https://github.com/Flipmachin1001/Streamprocessing.git
 ```
 3. Перейти в созданный каталог:
 ```
